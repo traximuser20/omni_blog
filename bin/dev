@@ -13,4 +13,14 @@ export PORT="${PORT:-3000}"
 export RUBY_DEBUG_OPEN="true"
 export RUBY_DEBUG_LAZY="true"
 
-exec foreman start -f Procfile.dev "$@"
+# Start the processes directly in the foreground
+# to avoid foreman's signal handling issues here.
+# Start CSS watcher first
+bin/rails tailwindcss:watch &
+CSS_PID=$!
+
+# Start Rails server
+bin/rails server
+
+# Cleanup on exit
+kill $CSS_PID
