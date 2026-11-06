@@ -1,21 +1,25 @@
-<div class="mx-auto mt-10 max-w-md rounded-3xl border border-stone-200 bg-white/70 p-10 shadow-2xl shadow-stone-900/[0.08] backdrop-blur-md ring-1 ring-stone-900/5 relative overflow-hidden">
+<div class="mx-auto mt-10 max-w-md rounded-3xl border border-stone-200 bg-white/70 p-8 sm:p-10 shadow-2xl shadow-stone-900/[0.08] backdrop-blur-md ring-1 ring-stone-900/5 relative overflow-hidden">
   <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-500 via-rose-500 to-violet-600"></div>
-  <h2 class="mt-4 font-display text-3xl font-semibold text-stone-900">Forgot your password?</h2>
 
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "mt-8 space-y-6" }) do |f| %>
+  <div class="mt-2 text-center sm:text-left">
+    <h2 class="font-display text-3xl font-semibold tracking-tight text-stone-900">Forgot password?</h2>
+    <p class="mt-1 text-sm text-stone-500">Enter your email and we'll send you reset instructions</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "mt-8 space-y-5" }) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>
 
-    <div class="field">
-      <%= f.label :email, class: "block font-display text-sm font-semibold text-stone-900" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 block w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+    <div>
+      <%= f.label :email, "Email address", class: "block font-display text-sm font-semibold text-stone-900" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", class: "mt-1.5 block w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
     </div>
 
-    <div class="actions">
-      <%= f.submit "Send me password reset instructions", class: "w-full cursor-pointer rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-orange-600" %>
+    <div class="pt-2">
+      <%= f.submit "Send reset instructions", class: "w-full cursor-pointer rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-stone-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25 active:translate-y-0" %>
     </div>
   <% end %>
 
-  <div class="mt-6 text-sm text-stone-500">
-    <%= render "devise/shared/links" %>
+  <div class="mt-8 border-t border-stone-200/80 pt-6 text-center text-sm text-stone-500">
+    <p>Remember your password? <%= link_to "Log in", new_session_path(resource_name), class: "font-semibold text-orange-600 hover:text-orange-700 underline" %></p>
   </div>
 </div>

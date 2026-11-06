@@ -1,22 +1,31 @@
-<div class="mx-auto mt-10 max-w-md rounded-3xl border border-stone-200 bg-white/70 p-10 shadow-2xl shadow-stone-900/[0.08] backdrop-blur-md ring-1 ring-stone-900/5 relative overflow-hidden">
+<div class="mx-auto mt-10 max-w-md rounded-3xl border border-stone-200 bg-white/70 p-8 sm:p-10 shadow-2xl shadow-stone-900/[0.08] backdrop-blur-md ring-1 ring-stone-900/5 relative overflow-hidden">
   <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-500 via-rose-500 to-violet-600"></div>
-  <h2 class="mt-4 font-display text-3xl font-semibold text-stone-900">Log in</h2>
 
-  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-8 space-y-6" }) do |f| %>
-    <div class="field">
-      <%= f.label :email, class: "block font-display text-sm font-semibold text-stone-900" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 block w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+  <div class="mt-2 text-center sm:text-left">
+    <h2 class="font-display text-3xl font-semibold tracking-tight text-stone-900">Log in</h2>
+    <p class="mt-1 text-sm text-stone-500">Welcome back to OmniBlog</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-8 space-y-5" }) do |f| %>
+    <div>
+      <%= f.label :email, "Email address", class: "block font-display text-sm font-semibold text-stone-900" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", class: "mt-1.5 block w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
     </div>
 
-    <div class="field" data-controller="password-visibility">
-      <%= f.label :password, class: "block font-display text-sm font-semibold text-stone-900" %>
-      <div class="relative mt-1">
-        <%= f.password_field :password, autocomplete: "current-password", data: { password_visibility_target: "input" }, class: "block w-full rounded-lg border border-stone-300 bg-white pl-4 pr-12 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
-        <button type="button" aria-label="Toggle password visibility" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3">
-          <span data-password-visibility-target="visible" class="text-stone-500 hover:text-orange-600 transition-colors duration-200">
+    <div data-controller="password-visibility">
+      <div class="flex items-center justify-between">
+        <%= f.label :password, class: "block font-display text-sm font-semibold text-stone-900" %>
+        <% if devise_mapping.recoverable? %>
+          <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors" %>
+        <% end %>
+      </div>
+      <div class="relative mt-1.5">
+        <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "block w-full rounded-xl border border-stone-300 bg-white pl-4 pr-11 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+        <button type="button" aria-label="Show password" title="Show password" aria-pressed="false" data-password-visibility-target="button" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 hover:text-stone-700 focus:text-stone-700 focus:outline-none cursor-pointer transition-colors">
+          <span data-password-visibility-target="visible" class="inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </span>
-          <span data-password-visibility-target="hidden" class="hidden text-stone-500 hover:text-orange-600 transition-colors duration-200">
+          <span data-password-visibility-target="hidden" class="hidden inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
           </span>
         </button>
@@ -24,18 +33,18 @@
     </div>
 
     <% if devise_mapping.rememberable? %>
-      <div class="flex items-center gap-2">
-        <%= f.check_box :remember_me, class: "rounded border-stone-300 text-orange-600 focus:ring-orange-500" %>
-        <%= f.label :remember_me, class: "text-sm text-stone-600" %>
+      <div class="flex items-center gap-2 pt-0.5">
+        <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-stone-300 text-orange-600 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer" %>
+        <%= f.label :remember_me, class: "text-sm text-stone-600 cursor-pointer select-none" %>
       </div>
     <% end %>
 
-    <div class="actions">
-      <%= f.submit "Log in", class: "w-full cursor-pointer rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-orange-600" %>
+    <div class="pt-2">
+      <%= f.submit "Log in", class: "w-full cursor-pointer rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-stone-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25 active:translate-y-0" %>
     </div>
   <% end %>
 
-  <div class="mt-6 text-sm text-stone-500">
-    <%= render "devise/shared/links" %>
+  <div class="mt-8 border-t border-stone-200/80 pt-6 text-center text-sm text-stone-500">
+    <p>Don't have an account? <%= link_to "Sign up", new_registration_path(resource_name), class: "font-semibold text-orange-600 hover:text-orange-700 underline" %></p>
   </div>
 </div>

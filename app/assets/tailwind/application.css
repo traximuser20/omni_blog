@@ -101,3 +101,19 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a29e;
 }
+
+/* Rails form validation styling */
+.field_with_errors {
+  display: contents;
+}
+
+.field_with_errors input {
+  border-color: #f87171 !important;
+}
+
+.field_with_errors input:focus {
+  border-color: #ef4444 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+

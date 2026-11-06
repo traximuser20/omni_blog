@@ -1,81 +1,92 @@
-<div class="mx-auto mt-10 max-w-md rounded-3xl border border-stone-200 bg-white/70 p-10 shadow-2xl shadow-stone-900/[0.08] backdrop-blur-md ring-1 ring-stone-900/5 relative overflow-hidden">
+<div class="mx-auto mt-10 max-w-md rounded-3xl border border-stone-200 bg-white/70 p-8 sm:p-10 shadow-2xl shadow-stone-900/[0.08] backdrop-blur-md ring-1 ring-stone-900/5 relative overflow-hidden">
   <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-500 via-rose-500 to-violet-600"></div>
-  <h2 class="mt-4 font-display text-3xl font-semibold text-stone-900">Edit account</h2>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "mt-8 space-y-6" }) do |f| %>
+  <div class="mt-2 text-center sm:text-left">
+    <h2 class="font-display text-3xl font-semibold tracking-tight text-stone-900">Edit account</h2>
+    <p class="mt-1 text-sm text-stone-500">Update your email or change your password</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "mt-8 space-y-5" }) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>
 
-    <div class="field">
-      <%= f.label :email, class: "block font-display text-sm font-semibold text-stone-900" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 block w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+    <div>
+      <%= f.label :email, "Email address", class: "block font-display text-sm font-semibold text-stone-900" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com", class: "mt-1.5 block w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
     </div>
 
     <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <div class="text-sm text-stone-600">Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+      <div class="rounded-xl border border-amber-200 bg-amber-50/90 p-3 text-xs text-amber-900">
+        Currently waiting confirmation for: <span class="font-semibold"><%= resource.unconfirmed_email %></span>
+      </div>
     <% end %>
 
-    <div class="field" data-controller="password-visibility">
-      <%= f.label :password, "New password", class: "block font-display text-sm font-semibold text-stone-900" %>
-      <p class="text-xs text-stone-400 mt-1"><i>(leave blank if you don't want to change it)</i></p>
+    <div data-controller="password-visibility">
+      <div class="flex items-center justify-between">
+        <%= f.label :password, "New password", class: "block font-display text-sm font-semibold text-stone-900" %>
+        <span class="text-xs text-stone-400">leave blank to keep current</span>
+      </div>
       <% if @minimum_password_length %>
-        <p class="text-xs text-stone-400"><%= @minimum_password_length %> characters minimum</p>
+        <p class="text-xs text-stone-400 mt-1">(<%= @minimum_password_length %> characters minimum)</p>
       <% end %>
-      <div class="relative mt-1">
-        <%= f.password_field :password, autocomplete: "new-password", data: { password_visibility_target: "input" }, class: "block w-full rounded-lg border border-stone-300 bg-white pl-4 pr-12 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
-        <button type="button" aria-label="Toggle password visibility" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3">
-          <span data-password-visibility-target="visible" class="text-stone-500 hover:text-orange-600 transition-colors duration-200">
+      <div class="relative mt-1.5">
+        <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "block w-full rounded-xl border border-stone-300 bg-white pl-4 pr-11 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+        <button type="button" aria-label="Show password" title="Show password" aria-pressed="false" data-password-visibility-target="button" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 hover:text-stone-700 focus:text-stone-700 focus:outline-none cursor-pointer transition-colors">
+          <span data-password-visibility-target="visible" class="inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </span>
-          <span data-password-visibility-target="hidden" class="hidden text-stone-500 hover:text-orange-600 transition-colors duration-200">
+          <span data-password-visibility-target="hidden" class="hidden inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
           </span>
         </button>
       </div>
     </div>
 
-    <div class="field" data-controller="password-visibility">
-      <%= f.label :password_confirmation, class: "block font-display text-sm font-semibold text-stone-900" %>
-      <div class="relative mt-1">
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", data: { password_visibility_target: "input" }, class: "block w-full rounded-lg border border-stone-300 bg-white pl-4 pr-12 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
-        <button type="button" aria-label="Toggle password visibility" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3">
-          <span data-password-visibility-target="visible" class="text-stone-500 hover:text-orange-600 transition-colors duration-200">
+    <div data-controller="password-visibility">
+      <%= f.label :password_confirmation, "Confirm new password", class: "block font-display text-sm font-semibold text-stone-900" %>
+      <div class="relative mt-1.5">
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "block w-full rounded-xl border border-stone-300 bg-white pl-4 pr-11 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+        <button type="button" aria-label="Show password" title="Show password" aria-pressed="false" data-password-visibility-target="button" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 hover:text-stone-700 focus:text-stone-700 focus:outline-none cursor-pointer transition-colors">
+          <span data-password-visibility-target="visible" class="inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </span>
-          <span data-password-visibility-target="hidden" class="hidden text-stone-500 hover:text-orange-600 transition-colors duration-200">
+          <span data-password-visibility-target="hidden" class="hidden inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
           </span>
         </button>
       </div>
     </div>
 
-    <div class="field" data-controller="password-visibility">
-      <%= f.label :current_password, class: "block font-display text-sm font-semibold text-stone-900" %>
-      <p class="text-xs text-stone-400 mt-1"><i>(we need your current password to confirm your changes)</i></p>
-      <div class="relative mt-1">
-        <%= f.password_field :current_password, autocomplete: "current-password", data: { password_visibility_target: "input" }, class: "block w-full rounded-lg border border-stone-300 bg-white pl-4 pr-10 py-3 text-sm placeholder:text-stone-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
-        <button type="button" aria-label="Toggle password visibility" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3">
-          <span data-password-visibility-target="visible" class="text-stone-500 hover:text-orange-600 transition-colors duration-200">
+    <div data-controller="password-visibility">
+      <div class="flex items-center justify-between">
+        <%= f.label :current_password, class: "block font-display text-sm font-semibold text-stone-900" %>
+        <span class="text-xs text-stone-400">required to confirm changes</span>
+      </div>
+      <div class="relative mt-1.5">
+        <%= f.password_field :current_password, autocomplete: "current-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "block w-full rounded-xl border border-stone-300 bg-white pl-4 pr-11 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-200" %>
+        <button type="button" aria-label="Show password" title="Show password" aria-pressed="false" data-password-visibility-target="button" data-action="click->password-visibility#toggle" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 hover:text-stone-700 focus:text-stone-700 focus:outline-none cursor-pointer transition-colors">
+          <span data-password-visibility-target="visible" class="inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </span>
-          <span data-password-visibility-target="hidden" class="hidden text-stone-500 hover:text-orange-600 transition-colors duration-200">
+          <span data-password-visibility-target="hidden" class="hidden inline-flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
           </span>
         </button>
       </div>
     </div>
 
-    <div class="actions">
-      <%= f.submit "Update", class: "w-full cursor-pointer rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-orange-600" %>
+    <div class="pt-2">
+      <%= f.submit "Update account", class: "w-full cursor-pointer rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-stone-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25 active:translate-y-0" %>
     </div>
   <% end %>
 
-  <h3 class="mt-10 font-display text-xl font-semibold text-stone-900">Cancel my account</h3>
-
-  <div class="mt-4 text-sm text-stone-600">
-    Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: "text-red-600 hover:text-red-700 underline" %>
-  </div>
-
-  <div class="mt-6 text-sm">
-    <%= link_to "Back", :back, class: "text-stone-500 hover:text-stone-900 underline" %>
+  <div class="mt-8 border-t border-stone-200/80 pt-6">
+    <h3 class="font-display text-sm font-semibold text-stone-900">Danger zone</h3>
+    <div class="mt-2 flex items-center justify-between text-sm text-stone-500">
+      <span>Unhappy? Permanently delete account:</span>
+      <%= button_to "Delete", registration_path(resource_name), data: { confirm: "Are you sure? This cannot be undone.", turbo_confirm: "Are you sure? This cannot be undone." }, method: :delete, class: "font-semibold text-red-600 hover:text-red-700 underline cursor-pointer" %>
+    </div>
+    <div class="mt-4 text-center">
+      <%= link_to "← Back", :back, class: "text-xs font-semibold text-stone-500 hover:text-stone-800 transition-colors" %>
+    </div>
   </div>
 </div>
