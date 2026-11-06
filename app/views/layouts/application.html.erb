@@ -41,9 +41,11 @@
 
         <div class="flex items-center gap-3">
           <span class="hidden font-mono text-xs text-stone-400 sm:block"><%= @posts&.size || Post.count %> stories</span>
-          <%= link_to new_post_path, class: "group inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25" do %>
-            <svg class="h-4 w-4 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            New story
+          <% if user_signed_in? %>
+            <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "group inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25" %>
+          <% else %>
+            <%= link_to "Login", new_user_session_path, class: "text-sm font-semibold text-stone-600 hover:text-stone-900" %>
+            <%= link_to "Signup", new_user_registration_path, class: "group inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25" %>
           <% end %>
         </div>
       </div>
