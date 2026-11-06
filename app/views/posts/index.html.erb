@@ -1,0 +1,101 @@
+<% content_for :title, "OmniBlog — Stories worth reading" %>
+
+<!-- Hero -->
+<section class="pt-14 pb-10 text-center animate-rise">
+  <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white/80 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-stone-500 shadow-sm">
+    <span class="relative flex h-2 w-2">
+      <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+      <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+    </span>
+    The Rails journal · <%= pluralize(@posts.size, "story") %> published
+  </p>
+  <h1 class="mx-auto max-w-3xl font-display text-5xl font-semibold leading-[1.05] tracking-tight text-stone-900 sm:text-6xl">
+    Stories worth<br>
+    <span class="bg-gradient-to-r from-orange-600 via-rose-500 to-violet-600 bg-clip-text text-transparent">reading slowly.</span>
+  </h1>
+  <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-stone-500">
+    Essays, tutorials and field notes on building with Rails — written clearly, with care.
+  </p>
+  <div class="mt-8 flex items-center justify-center gap-3">
+    <%= link_to new_post_path, class: "inline-flex items-center gap-2 rounded-full bg-stone-900 px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/30" do %>
+      Start writing
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    <% end %>
+    <a href="#latest" class="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white/70 px-7 py-3.5 text-sm font-semibold text-stone-700 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-stone-900 hover:text-stone-900">
+      Browse stories
+    </a>
+  </div>
+</section>
+
+<% if @posts.any? %>
+  <% featured = @posts.first %>
+  <% rest = @posts.drop(1) %>
+
+  <!-- Featured story -->
+  <section class="mb-12 animate-rise-1">
+    <%= link_to featured, class: "group grid overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-xl shadow-stone-900/[0.06] transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-stone-900/10 md:grid-cols-2" do %>
+      <div class="cover-texture relative flex min-h-[260px] items-center justify-center bg-gradient-to-br <%= cover_gradient(featured) %> p-10 md:min-h-[340px]">
+        <span class="relative z-10 font-display text-[7rem] font-bold leading-none text-white/90 drop-shadow-lg transition-transform duration-500 group-hover:scale-110 md:text-[10rem]"><%= featured.title.to_s.first&.upcase || "O" %></span>
+        <span class="absolute left-5 top-5 z-10 rounded-full bg-white/15 px-3.5 py-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md">★ Featured</span>
+      </div>
+      <div class="flex flex-col justify-center p-8 md:p-12">
+        <div class="mb-4 flex items-center gap-3 text-xs text-stone-400">
+          <span class="font-mono uppercase tracking-[0.18em] text-orange-600"><%= featured.created_at.strftime("%b %d, %Y") %></span>
+          <span class="h-1 w-1 rounded-full bg-stone-300"></span>
+          <span><%= reading_time(featured) %></span>
+        </div>
+        <h2 class="font-display text-3xl font-semibold leading-tight tracking-tight text-stone-900 transition-colors group-hover:text-orange-700 md:text-4xl"><%= featured.title %></h2>
+        <p class="mt-4 leading-relaxed text-stone-500"><%= post_excerpt(featured, 220) %></p>
+        <div class="mt-8 flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-full bg-stone-900 text-xs font-bold text-white"><%= author_initials(featured) %></span>
+          <div class="leading-tight">
+            <p class="text-sm font-semibold text-stone-900">OmniBlog Team</p>
+            <p class="text-xs text-stone-400">Editors of this journal</p>
+          </div>
+          <span class="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold text-stone-900">
+            Read story
+            <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </span>
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Grid -->
+  <section id="latest" class="scroll-mt-24">
+    <div class="mb-7 flex items-end justify-between">
+      <div>
+        <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-orange-600">The archive</p>
+        <h2 class="mt-1 font-display text-3xl font-semibold tracking-tight">Latest stories</h2>
+      </div>
+      <p class="hidden font-mono text-xs text-stone-400 sm:block"><%= pluralize(rest.size, "more story") %> below</p>
+    </div>
+
+    <% if rest.any? %>
+      <div id="posts" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <% rest.each_with_index do |post, i| %>
+          <div class="<%= 'animate-rise-1' if i < 3 %> <%= 'animate-rise-2' if i >= 3 %>">
+            <%= render post %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="rounded-3xl border border-dashed border-stone-300 bg-white/60 px-8 py-14 text-center">
+        <p class="font-display text-xl text-stone-600">One story down — many more to come.</p>
+        <p class="mt-2 text-sm text-stone-400">Write the next one and it will appear here.</p>
+      </div>
+    <% end %>
+  </section>
+<% else %>
+  <!-- Empty state -->
+  <section class="mx-auto mt-6 max-w-2xl overflow-hidden rounded-3xl border border-stone-200 bg-white text-center shadow-xl shadow-stone-900/[0.05] animate-rise-1">
+    <div class="cover-texture bg-gradient-to-br from-stone-900 via-stone-800 to-orange-900 px-8 py-14">
+      <span class="relative z-10 mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-white/10 font-display text-3xl font-bold text-white backdrop-blur-md">O</span>
+      <h2 class="relative z-10 mt-6 font-display text-3xl font-semibold text-white">A blank page, full of promise</h2>
+      <p class="relative z-10 mx-auto mt-3 max-w-md text-stone-300">No stories yet. Write the first one — set the tone for everything that follows.</p>
+    </div>
+    <div class="px-8 py-8">
+      <%= link_to "Write your first story", new_post_path, class: "inline-flex items-center gap-2 rounded-full bg-stone-900 px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-orange-600" %>
+    </div>
+  </section>
+<% end %>

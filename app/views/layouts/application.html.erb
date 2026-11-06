@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <title><%= content_for(:title) || "OmniBlog — Stories worth reading" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="OmniBlog — essays, tutorials and notes on building with Rails.">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen font-sans text-stone-900 antialiased flex flex-col">
+    <!-- Top rule -->
+    <div class="h-1 w-full bg-gradient-to-r from-orange-500 via-rose-500 to-violet-600"></div>
+
+    <header class="sticky top-0 z-40 border-b border-stone-200/70 bg-[#fafaf9]/85 backdrop-blur-xl">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
+        <a href="/" class="group flex items-center gap-3">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-stone-900 font-display text-lg font-bold text-white shadow-lg shadow-stone-900/20 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-105">O</span>
+          <span class="leading-none">
+            <span class="block font-display text-[1.35rem] font-semibold tracking-tight">OmniBlog</span>
+            <span class="block font-mono text-[10px] uppercase tracking-[0.22em] text-stone-500">est. 2026 — rails notes</span>
+          </span>
+        </a>
+
+        <nav class="hidden items-center gap-1 text-sm font-medium text-stone-600 md:flex">
+          <%= link_to "Stories", root_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
+          <%= link_to "Admin", admin_root_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
+          <a href="#latest" class="rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white">Latest</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <span class="hidden font-mono text-xs text-stone-400 sm:block"><%= @posts&.size || Post.count %> stories</span>
+          <%= link_to new_post_path, class: "group inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25" do %>
+            <svg class="h-4 w-4 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            New story
+          <% end %>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl flex-1 px-5 pb-20">
+      <% if notice %>
+        <div class="mx-auto mt-8 flex max-w-2xl items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/90 px-5 py-4 text-sm font-medium text-emerald-900 shadow-sm animate-rise" role="alert">
+          <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-500 text-white">✓</span>
+          <%= notice %>
+        </div>
+      <% end %>
+      <% if alert %>
+        <div class="mx-auto mt-8 flex max-w-2xl items-center gap-3 rounded-2xl border border-red-200 bg-red-50/90 px-5 py-4 text-sm font-medium text-red-900 shadow-sm" role="alert">
+          <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-red-500 text-white">!</span>
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer class="border-t border-stone-200 bg-white/60">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-10 sm:flex-row">
+        <div class="flex items-center gap-3">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-stone-900 font-display text-sm font-bold text-white">O</span>
+          <p class="text-sm text-stone-500">© <%= Time.current.year %> OmniBlog · Built with Rails 8 & Tailwind v4</p>
+        </div>
+        <div class="flex items-center gap-6 font-mono text-xs uppercase tracking-widest text-stone-400">
+          <%= link_to "Feed", posts_path(format: :json), class: "transition-colors hover:text-stone-900" %>
+          <%= link_to "Admin", admin_root_path, class: "transition-colors hover:text-stone-900" %>
+          <span>Rails · Postgres · Hotwire</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

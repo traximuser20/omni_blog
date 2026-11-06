@@ -1,0 +1,45 @@
+<%= form_with(model: post, class: "space-y-6", data: { controller: "post-form" }) do |form| %>
+  <% if post.errors.any? %>
+    <div class="flex gap-4 rounded-2xl border border-red-200 bg-red-50/80 p-5 text-red-900 shadow-sm" role="alert">
+      <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-red-500 text-sm font-bold text-white">!</span>
+      <div>
+        <h2 class="font-semibold"><%= pluralize(post.errors.count, "error") %> kept this story from saving:</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-red-700">
+          <% post.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="group">
+    <%= form.label :title, "Story title", class: "mb-2 flex items-center justify-between text-sm font-semibold text-stone-700" do %>
+      Story title
+      <span class="font-mono text-[11px] font-normal text-stone-400" data-post-form-target="titleCount">0 / 120</span>
+    <% end %>
+    <%= form.text_field :title, maxlength: 120, placeholder: "A title worth clicking…",
+      data: { post_form_target: "title", action: "input->post-form#update" },
+      class: "block w-full rounded-2xl border border-stone-200 bg-white/80 px-5 py-4 font-display text-xl font-medium tracking-tight text-stone-900 shadow-sm backdrop-blur transition-all placeholder:font-sans placeholder:text-base placeholder:font-normal placeholder:text-stone-400 hover:border-stone-300 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/15" %>
+  </div>
+
+  <div>
+    <div class="mb-2 flex items-center justify-between">
+      <%= form.label :content, "The story", class: "text-sm font-semibold text-stone-700" %>
+      <span class="font-mono text-[11px] text-stone-400" data-post-form-target="wordCount">0 words · 1 min read</span>
+    </div>
+    <%= form.textarea :content, rows: 12, placeholder: "Once upon a deploy… write clearly, write honestly. Blank lines become paragraphs.",
+      data: { post_form_target: "content", action: "input->post-form#update" },
+      class: "block w-full resize-y rounded-2xl border border-stone-200 bg-white/80 px-5 py-4 leading-relaxed text-stone-800 shadow-sm backdrop-blur transition-all placeholder:text-stone-400 hover:border-stone-300 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/15" %>
+    <p class="mt-2 text-xs text-stone-400">Tip: short paragraphs read best on screens. A blank line starts a new one.</p>
+  </div>
+
+  <div class="flex flex-col-reverse items-stretch gap-3 pt-2 sm:flex-row sm:items-center">
+    <%= form.submit post.persisted? ? "Save changes" : "Publish story",
+      class: "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-stone-900 px-8 py-3.5 text-sm font-semibold text-white shadow-xl shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/30 active:translate-y-0" %>
+    <span class="hidden items-center gap-2 text-xs text-stone-400 sm:inline-flex">
+      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Autosaved as draft in your browser
+    </span>
+  </div>
+<% end %>
