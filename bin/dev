@@ -15,12 +15,15 @@ export RUBY_DEBUG_LAZY="true"
 
 # Start the processes directly in the foreground
 # to avoid foreman's signal handling issues here.
-# Start CSS watcher first
+# Start CSS watchers first
 bin/rails tailwindcss:watch &
-CSS_PID=$!
+TAILWIND_PID=$!
+
+bin/rails dartsass:watch &
+DARTSASS_PID=$!
 
 # Start Rails server
 bin/rails server
 
 # Cleanup on exit
-kill $CSS_PID
+kill $TAILWIND_PID $DARTSASS_PID
