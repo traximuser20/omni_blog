@@ -56,6 +56,40 @@
     </div>
   </article>
 
+  <!-- Comments -->
+  <section class="mt-8 rounded-3xl border border-stone-200/80 bg-white/80 p-8 shadow-xl shadow-stone-900/[0.05] backdrop-blur sm:p-12" aria-labelledby="comments-heading">
+    <div class="flex items-end justify-between gap-3">
+      <h2 id="comments-heading" class="font-display text-2xl font-semibold tracking-tight text-stone-900">Comments</h2>
+      <span class="rounded-full bg-stone-900/[0.05] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-stone-500">
+        <%= pluralize(@comments.size, "comment") %>
+      </span>
+    </div>
+
+    <% if @comments.any? %>
+      <div class="mt-6 space-y-3">
+        <%= render @comments %>
+      </div>
+    <% else %>
+      <p class="mt-6 rounded-2xl border border-dashed border-stone-200 bg-stone-50/60 px-5 py-6 text-center text-sm text-stone-500">
+        No comments yet — be the first to share a thought.
+      </p>
+    <% end %>
+
+    <div class="mt-8 border-t border-stone-100 pt-8">
+      <% if user_signed_in? %>
+        <%= render "comments/form", post: @post, comment: @comment %>
+      <% else %>
+        <div class="flex flex-col items-center justify-between gap-4 rounded-2xl border border-stone-200 bg-stone-50/60 px-5 py-5 text-center sm:flex-row sm:text-left">
+          <p class="text-sm text-stone-600">
+            <span class="font-semibold text-stone-900">Join the conversation.</span>
+            Sign in to leave a comment.
+          </p>
+          <%= link_to "Sign in to comment", new_user_session_path, class: "shrink-0 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600" %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
   <!-- Footer actions -->
   <footer class="mt-8 flex flex-col items-center justify-between gap-4 rounded-3xl border border-stone-200/80 bg-white/70 px-6 py-5 backdrop-blur sm:flex-row">
     <%= link_to posts_path, class: "group inline-flex items-center gap-2 text-sm font-semibold text-stone-900" do %>

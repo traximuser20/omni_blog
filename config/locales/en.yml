@@ -29,3 +29,8 @@
 
 en:
   hello: "Hello world"
+
+  active_admin:
+    comments:
+      # Renamed so internal admin notes are never confused with public post comments.
+      title_content: "Admin notes (%{count})"

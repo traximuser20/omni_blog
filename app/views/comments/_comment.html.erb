@@ -1,0 +1,26 @@
+<div id="<%= dom_id(comment) %>" class="group flex gap-4 rounded-2xl border border-stone-200/80 bg-white p-5 shadow-sm transition-all hover:border-stone-300">
+  <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-orange-500 via-rose-500 to-violet-600 text-xs font-bold text-white shadow-sm">
+    <%= comment_initials(comment) %>
+  </span>
+
+  <div class="min-w-0 flex-1">
+    <div class="flex items-baseline justify-between gap-3">
+      <p class="truncate text-sm font-semibold text-stone-900"><%= comment_author(comment) %></p>
+      <p class="shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400"><%= time_ago_in_words(comment.created_at) %> ago</p>
+    </div>
+    <p class="mt-1.5 whitespace-pre-line break-words text-sm leading-relaxed text-stone-600"><%= comment.body %></p>
+  </div>
+
+  <% if user_signed_in? && comment.user == current_user %>
+    <%= button_to post_comment_path(comment.post, comment),
+                  method: :delete,
+                  title: "Delete comment",
+                  data: { turbo_confirm: "Delete this comment?" },
+                  class: "grid h-8 w-8 shrink-0 cursor-pointer place-items-center self-start rounded-full text-stone-300 opacity-0 transition-all hover:bg-red-50 hover:text-red-600 focus:opacity-100 group-hover:opacity-100" do %>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+      </svg>
+      <span class="sr-only">Delete comment</span>
+    <% end %>
+  <% end %>
+</div>

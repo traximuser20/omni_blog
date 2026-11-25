@@ -1,0 +1,22 @@
+<%= form_with model: [post, comment], class: "space-y-3" do |form| %>
+  <div class="flex items-start gap-4">
+    <span class="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-stone-900 text-xs font-bold text-white">
+      <%= current_user.email.to_s.split("@").first.first(2).upcase %>
+    </span>
+
+    <div class="flex-1">
+      <%= form.label :body, "Add a comment", class: "mb-1.5 block font-mono text-[11px] uppercase tracking-[0.2em] text-stone-400" %>
+      <%= form.text_area :body,
+            rows: 3,
+            maxlength: 2_000,
+            placeholder: "Share what you think…",
+            class: "w-full resize-y rounded-2xl border border-stone-200 bg-stone-50/60 px-4 py-3 text-sm leading-relaxed text-stone-800 placeholder:text-stone-400 focus:border-stone-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-stone-900/10" %>
+
+      <div class="mt-3 flex items-center justify-between gap-3">
+        <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">Signed in as <%= current_user.email.to_s.split("@").first %></p>
+        <%= form.submit "Post comment",
+              class: "cursor-pointer rounded-full bg-stone-900 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600" %>
+      </div>
+    </div>
+  </div>
+<% end %>
