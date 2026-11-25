@@ -31,6 +31,10 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
+  # Allow ngrok tunnels (used for sharing the local app publicly).
+  config.hosts << /.*\.ngrok(-free)?\.(dev|app|io)\z/
+  config.hosts << "driftless-hiroko-floristically.ngrok-free.dev"
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

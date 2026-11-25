@@ -207,6 +207,24 @@ Run a deploy locally at any time with:
 bin/kamal deploy
 ```
 
+## Sharing via ngrok
+
+The app is exposed publicly at:
+
+> **https://driftless-hiroko-floristically.ngrok-free.dev**
+
+Start the tunnel (if not already running):
+
+```bash
+ngrok http 3000
+```
+
+The tunnel forwards to `http://localhost:3000`. `config/application.rb` allowlists
+`*.ngrok-free.dev` (and other ngrok domains) so Rails' host authorization accepts
+the tunnel. The ngrok free tier shows a one-time browser interstitial; click
+"Visit Site" to continue, or send the `ngrok-skip-browser-warning: 1` header for
+programmatic access.
+
 ## License
 
 MIT
