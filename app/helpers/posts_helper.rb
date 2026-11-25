@@ -14,7 +14,7 @@ module PostsHelper
 
   def reading_time(post)
     words = post.content.to_s.split.size
-    mins = [(words / 200.0).ceil, 1].max
+    mins = [ (words / 200.0).ceil, 1 ].max
     "#{mins} min read"
   end
 

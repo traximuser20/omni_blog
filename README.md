@@ -166,6 +166,39 @@ HTTP caching/compression in front of Puma. Set environment variables for the dat
 3. Run `bundle exec rubocop` and `bundle exec brakeman`.
 4. Open a pull request with a clear description.
 
+## CI/CD
+
+### Continuous Integration (GitHub Actions)
+
+`.github/workflows/ci.yml` runs on every pull request and push to `main`:
+
+- **Security scans** — Brakeman (static analysis), bundler-audit (gem CVEs), importmap audit (JS deps).
+- **Lint** — RuboCop (rails-omakase).
+- **Tests** — Minitest suite against PostgreSQL, with asset precompilation.
+- **System tests** — Capybara/Selenium (currently none defined).
+
+Concurrency cancellation is enabled to save CI minutes.
+
+### Continuous Deployment
+
+`.github/workflows/cd.yml` builds and pushes the Docker image to GitHub Container
+Registry (`ghcr.io`) on every push to `main`. Kamal deploys are triggered manually
+via `workflow_dispatch` (input `deploy: true`) and require these repository secrets:
+
+- `RAILS_MASTER_KEY`
+- `SSH_PRIVATE_KEY`
+- `KAMAL_REGISTRY_PASSWORD` (if using an authenticated registry)
+
+> **Note:** `config/deploy.yml` ships with a private target (`192.168.0.1`) and a
+> local registry (`localhost:5555`). Update `servers.web` and `registry.server` to
+> your real host/registry before deploying from GitHub Actions.
+
+Run a deploy locally at any time with:
+
+```bash
+bin/kamal deploy
+```
+
 ## License
 
 MIT
