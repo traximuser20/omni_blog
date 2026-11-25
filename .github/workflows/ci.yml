@@ -140,7 +140,7 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips google-chrome-stable
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
 
       - name: Checkout code
         uses: actions/checkout@v6
@@ -150,6 +150,9 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
 
       - name: Prepare database
         env:
@@ -167,7 +170,12 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/omni_blog_test
-        run: bin/rails test:system
+        run: |
+          if ls test/system/*_test.rb >/dev/null 2>&1; then
+            bin/rails test:system
+          else
+            echo "No system tests found; skipping."
+          fi
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4

@@ -4,12 +4,6 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      deploy:
-        description: "Run Kamal deploy after building the image"
-        required: false
-        default: "false"
-        type: boolean
 
 concurrency:
   group: cd-${{ github.ref }}
@@ -56,14 +50,11 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            RUBY_VERSION=${{ vars.RUBY_VERSION || '3.4.12' }}
 
   deploy:
     name: Deploy (Kamal)
     needs: build
-    if: github.event_name == 'workflow_dispatch' && inputs.deploy == true
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: production
 
     steps:
@@ -76,21 +67,21 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Configure Kamal secrets
+      - name: Prepare Kamal secrets
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
-          # Allow the committed .kamal/secrets to pick up RAILS_MASTER_KEY from the
-          # environment when config/master.key is absent (as in CI).
-          if ! grep -q 'RAILS_MASTER_KEY=\\${RAILS_MASTER_KEY' .kamal/secrets; then
-            sed -i 's#^RAILS_MASTER_KEY=.*#RAILS_MASTER_KEY=${RAILS_MASTER_KEY:-$(cat config/master.key 2>/dev/null)}#' .kamal/secrets
+          # Prefer the secret from the environment; fall back to the local key file.
+          if [ -n "${RAILS_MASTER_KEY}" ]; then
+            printf 'RAILS_MASTER_KEY=%s\n' "${RAILS_MASTER_KEY}" > .kamal/secrets
+          elif [ -f config/master.key ]; then
+            printf 'RAILS_MASTER_KEY=%s\n' "$(cat config/master.key)" > .kamal/secrets
+          else
+            echo "RAILS_MASTER_KEY is required" >&2
+            exit 1
           fi
 
       - name: Deploy with Kamal
         env:
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
         run: bin/kamal deploy

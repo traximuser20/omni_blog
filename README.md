@@ -182,16 +182,24 @@ Concurrency cancellation is enabled to save CI minutes.
 ### Continuous Deployment
 
 `.github/workflows/cd.yml` builds and pushes the Docker image to GitHub Container
-Registry (`ghcr.io`) on every push to `main`. Kamal deploys are triggered manually
-via `workflow_dispatch` (input `deploy: true`) and require these repository secrets:
+Registry (`ghcr.io`) on every push to `main`, then deploys with Kamal.
+
+- **Build** runs on GitHub-hosted runners and pushes to GHCR.
+- **Deploy** runs on a **self-hosted runner** (your own machine) so it can reach
+  the private deploy target (`config/deploy.yml`) and the local registry. Set up a
+  self-hosted runner on the machine that has SSH access to the server:
+  <https://docs.github.com/en/actions/hosting-your-own-runners>
+
+The deploy job uses the `production` environment (supports required reviewers) and
+needs these repository secrets:
 
 - `RAILS_MASTER_KEY`
 - `SSH_PRIVATE_KEY`
-- `KAMAL_REGISTRY_PASSWORD` (if using an authenticated registry)
+- `KAMAL_REGISTRY_PASSWORD` (only if the registry requires auth)
 
 > **Note:** `config/deploy.yml` ships with a private target (`192.168.0.1`) and a
 > local registry (`localhost:5555`). Update `servers.web` and `registry.server` to
-> your real host/registry before deploying from GitHub Actions.
+> your real host/registry before deploying.
 
 Run a deploy locally at any time with:
 
