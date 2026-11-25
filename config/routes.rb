@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   resources :posts do
     resources :comments
+    resources :attachments, only: :destroy
   end
   get "up" => "rails/health#show", as: :rails_health_check
 

@@ -23,6 +23,44 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to post_url(Post.last)
   end
 
+  test "should create post with attachments" do
+    assert_difference([ "Post.count", "ActiveStorage::Attachment.count" ]) do
+      post posts_url, params: {
+        post: {
+          title: "Story with files",
+          content: "Attached body",
+          attachments: [ fixture_file_upload("sample.txt", "text/plain") ]
+        }
+      }
+    end
+
+    assert_equal 1, Post.last.attachments.count
+  end
+
+  test "should add an attachment when updating" do
+    assert_difference("ActiveStorage::Attachment.count") do
+      patch post_url(@post), params: {
+        post: {
+          title: @post.title,
+          content: @post.content,
+          attachments: [ fixture_file_upload("sample.txt", "text/plain") ]
+        }
+      }
+    end
+
+    assert_redirected_to post_url(@post)
+  end
+
+  test "should list attachments on the post page" do
+    @post.attachments.attach(io: file_fixture("sample.txt").open, filename: "notes.txt", content_type: "text/plain")
+
+    get post_url(@post)
+
+    assert_response :success
+    assert_includes response.body, "notes.txt"
+    assert_includes response.body, "Attachments"
+  end
+
   test "should show post" do
     get post_url(@post)
     assert_response :success

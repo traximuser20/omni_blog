@@ -2,8 +2,10 @@ ActiveAdmin.register Post do
   permit_params :title, :content
 
   # Post associations aren't exposed to Ransack (see Post.ransackable_associations),
-  # so drop the auto-generated association filter that breaks the index page.
+  # so drop the auto-generated association filters that break the index page.
   remove_filter :comments
+  remove_filter :attachments_attachments
+  remove_filter :attachments_blobs
 
   show do
     attributes_table do

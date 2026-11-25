@@ -1,11 +1,14 @@
 ---
 name: omni_blog_skills
-description: Skills for omni_blog project
+description: Skills for the omni_blog project — a Rails 8 editorial blog with Devise auth, ActiveAdmin, comments and Active Storage attachments
 metadata:
   type: skills
 ---
 
 # Skills for omni_blog
+
+OmniBlog is a Ruby on Rails 8.1 application. These skills are the ones that
+actually apply to this codebase.
 
 ## Ruby and Rails
 - ruby-coding-standards
@@ -17,17 +20,37 @@ metadata:
 - rails-verification
 - rails-performance-optimizer
 - rails-architecture-design
+- rails-migrations
+- rails-active-record
+
+## Authentication & Admin
+- devise-authentication
+- activeadmin
+- activeadmin-styling
+- ransack-filtering
 
 ## Frontend
-- react-reviewer
-- react-build-resolver
-- vue-reviewer
-- vue-patterns
-- vue-build-resolver
+- tailwindcss
+- hotwire-turbo
+- stimulus
+- propshaft-importmap
+- erb-templating
+
+## Storage & Media
+- active-storage
+- file-upload-validation
+- image-handling
+
+## Database
+- postgresql
+- activerecord-associations
+- database-indexing
 
 ## Testing
-- e2e-runner
-- tdd-guide
+- minitest
+- rails-integration-tests
+- rails-system-tests
+- fixture-management
 - test-coverage
 
 ## Code Quality
@@ -35,34 +58,32 @@ metadata:
 - code-simplifier
 - refactor-cleaner
 - comment-analyzer
+- rubocop-rails-omakase
 
 ## Security
 - security-reviewer
-- silent-failure-hunter
+- brakeman
+- bundler-audit
+- input-validation
 
 ## Performance
-- performance-optimizer
-- build-error-resolver
+- n-plus-one-detection
+- query-optimization
+- asset-pipeline
+- caching
+
+## DevOps
+- kamal-deployment
+- docker
+- thruster
 
 ## Documentation
 - doc-updater
 - docs-lookup
+- readme-maintenance
 
-## Other
-- spec-miner
-- agent-evaluator
-- plan
-- plan-orchestrate
-- pr-test-analyzer
-- python-review
-- quality-gate
-- react-build
-- react-review
-- react-test
-- refactor-clean
-- resume-session
-- review-pr
-- rust-build
-- rust-review
-- rust-test
-- santa-loop
+## Project-Specific
+- omni-blog-editorial-theme
+- omni-blog-comment-system
+- omni-blog-attachment-system
+- omni-blog-admin-notes
