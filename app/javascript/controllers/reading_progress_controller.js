@@ -4,11 +4,14 @@ export default class extends Controller {
   static targets = ["progressBar"]
 
   connect() {
-    window.addEventListener("scroll", this.updateProgress.bind(this))
+    this.boundUpdateProgress = this.updateProgress.bind(this)
+    window.addEventListener("scroll", this.boundUpdateProgress)
   }
 
   disconnect() {
-    window.removeEventListener("scroll", this.updateProgress.bind(this))
+    if (this.boundUpdateProgress) {
+      window.removeEventListener("scroll", this.boundUpdateProgress)
+    }
   }
 
   updateProgress() {

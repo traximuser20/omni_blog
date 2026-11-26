@@ -1,6 +1,9 @@
 class Post < ApplicationRecord
   has_many_attached :attachments
 
+  validates :title, presence: true, length: { maximum: 120 }
+  validates :content, presence: true
+
   validate :attachments_within_limits
 
   def self.ransackable_attributes(auth_object = nil)

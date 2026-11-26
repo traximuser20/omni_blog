@@ -69,4 +69,12 @@ Use these for everyday work on this codebase.
 - Use stimulus-reviewer when touching `app/javascript/controllers/`.
 - Use rails-migration-reviewer for any new migration.
 - Run `bin/rails test` and `bundle exec rubocop` before declaring work done.
+- Run `bin/rails db:migrate` and keep `db/schema.rb` in sync when adding migrations.
 - Keep changes consistent with the editorial Tailwind theme (stone/orange, Fraunces display font).
+
+## Recent Professionalization
+- Enabled Devise `:trackable` for `AdminUser` (session tracking).
+- Added `Post` validations (title/content presence and title length).
+- Added performance indexes on `posts.created_at` and `comments(post_id, created_at)`.
+- Hardened Stimulus `reading-progress` controller lifecycle.
+- Expanded Minitest coverage for `Post`, `User`, and `AdminUser`.

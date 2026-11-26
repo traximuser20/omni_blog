@@ -35,6 +35,8 @@ actually apply to this codebase.
 - stimulus
 - propshaft-importmap
 - erb-templating
+- accessibility
+- seo
 
 ## Storage & Media
 - active-storage
@@ -45,6 +47,8 @@ actually apply to this codebase.
 - postgresql
 - activerecord-associations
 - database-indexing
+- database-migrations
+- error-handling
 
 ## Testing
 - minitest
@@ -87,3 +91,9 @@ actually apply to this codebase.
 - omni-blog-comment-system
 - omni-blog-attachment-system
 - omni-blog-admin-notes
+
+## Recent Professionalization
+- database-migrations
+- database-indexing
+- rails-tdd
+- code-reviewer
