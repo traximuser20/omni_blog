@@ -1,4 +1,5 @@
 class AttachmentsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_post
 
   # DELETE /posts/:post_id/attachments/:id

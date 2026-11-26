@@ -1,26 +1,16 @@
 # OmniBlog
 
-An editorial blog built with Ruby on Rails — "Stories worth reading." OmniBlog
-publishes long-form essays, tutorials and field notes with a refined, print-inspired
-UI, a public comment system, file attachments, and a full ActiveAdmin back office.
+An editorial blog built with Ruby on Rails — "Stories worth reading." OmniBlog publishes long-form essays, tutorials and field notes with a refined, print-inspired UI, a public comment system, file attachments, and a full ActiveAdmin back office.
 
 ## Features
 
-- **Editorial public site** — featured story, latest grid, reading-time estimates,
-  progress bar, responsive Tailwind v4 theme (stone/orange, Fraunces display type).
-- **Stories (Posts)** — create, edit, delete posts with title + content; JSON
-  endpoints for the feed.
-- **Comments** — signed-in users can comment on any post; authors can delete their
-  own comments; avatars derived from account initials.
-- **Attachments** — drag-and-drop multi-file upload on new/edit forms (images,
-  PDFs, documents); gallery on the post page with image thumbnails and download
-  links; per-file removal. Stored via Active Storage (local disk in dev/prod).
+- **Editorial public site** — featured story, latest grid, reading-time estimates, progress bar, responsive Tailwind v4 theme (stone/orange, Fraunces display type).
+- **Stories (Posts)** — create, edit, delete posts with title + content; JSON endpoints for the feed.
+- **Comments** — signed-in users can comment on any post; authors can delete their own comments; avatars derived from account initials.
+- **Attachments** — drag-and-drop multi-file upload on new/edit forms (images, PDFs, documents); gallery on the post page with image thumbnails and download links; per-file removal. Stored via Active Storage (local disk in dev/prod).
 - **Authentication** — Devise for readers (`User`) and administrators (`AdminUser`).
-- **Admin back office** — ActiveAdmin with dashboard (recent posts + stats), post
-  management with a public-comments panel and internal "Admin notes", public
-  comment moderation, admin user management, and styled theme.
-- **Accessibility & UX** — semantic markup, keyboard-friendly forms, empty states,
-  Turbo-driven interactions.
+- **Admin back office** — ActiveAdmin with dashboard (recent posts + stats), post management with a public-comments panel and internal "Admin notes", public comment moderation, admin user management, and styled theme.
+- **Accessibility & UX** — semantic markup, keyboard-friendly forms, empty states, Turbo-driven interactions.
 
 ## Tech Stack
 
@@ -43,7 +33,6 @@ UI, a public comment system, file attachments, and a full ActiveAdmin back offic
 
 - Ruby 3.4+
 - PostgreSQL 14+
-- Node is **not** required (assets use Importmap + Tailwind CLI via gems)
 
 ### Setup
 
@@ -54,7 +43,7 @@ bundle install
 # Create and migrate the database
 bin/rails db:create db:migrate
 
-# (Optional) load seed data
+# Load seed data (optional)
 bin/rails db:seed
 
 # Build assets
@@ -89,7 +78,6 @@ bundle exec rubocop
 
 # Security audit
 bundle exec brakeman
-bundle exec bundler-audit
 
 # Rebuild assets after template/class changes
 bin/rails tailwindcss:build
@@ -150,14 +138,11 @@ Files are stored on the local filesystem:
 - Development/Production: `storage/` (see `config/storage.yml` `:local`)
 - Test: `tmp/storage/` (`:test`)
 
-`/storage/*` is gitignored. For production, configure S3/GCS in `config/storage.yml` and set
-`config.active_storage.service` accordingly.
+`/storage/*` is gitignored. For production, configure S3/GCS in `config/storage.yml` and set `config.active_storage.service` accordingly.
 
 ## Deployment
 
-The app ships with a `Dockerfile` and Kamal configuration (`.kamal/`). Thruster provides
-HTTP caching/compression in front of Puma. Set environment variables for the database,
-`SECRET_KEY_BASE`, and the chosen storage service before deploying.
+The app ships with a `Dockerfile` and Kamal configuration (`.kamal/`). Thruster provides HTTP caching/compression in front of Puma. Set environment variables for the database, `SECRET_KEY_BASE`, and the chosen storage service before deploying.
 
 ## Contributing
 
@@ -175,31 +160,22 @@ HTTP caching/compression in front of Puma. Set environment variables for the dat
 - **Security scans** — Brakeman (static analysis), bundler-audit (gem CVEs), importmap audit (JS deps).
 - **Lint** — RuboCop (rails-omakase).
 - **Tests** — Minitest suite against PostgreSQL, with asset precompilation.
-- **System tests** — Capybara/Selenium (currently none defined).
 
 Concurrency cancellation is enabled to save CI minutes.
 
 ### Continuous Deployment
 
-`.github/workflows/cd.yml` builds and pushes the Docker image to GitHub Container
-Registry (`ghcr.io`) on every push to `main`, then deploys with Kamal.
+`.github/workflows/cd.yml` builds and pushes the Docker image to GitHub Container Registry (`ghcr.io`) on every push to `main`, then deploys with Kamal.
 
 - **Build** runs on GitHub-hosted runners and pushes to GHCR.
-- **Deploy** runs on a **self-hosted runner** (your own machine) so it can reach
-  the private deploy target (`config/deploy.yml`) and the local registry. Set up a
-  self-hosted runner on the machine that has SSH access to the server:
+- **Deploy** runs on a **self-hosted runner** (your own machine) so it can reach the private deploy target (`config/deploy.yml`) and the local registry. Set up a self-hosted runner on the machine that has SSH access to the server:
   <https://docs.github.com/en/actions/hosting-your-own-runners>
 
-The deploy job uses the `production` environment (supports required reviewers) and
-needs these repository secrets:
+The deploy job uses the `production` environment (supports required reviewers) and needs these repository secrets:
 
 - `RAILS_MASTER_KEY`
 - `SSH_PRIVATE_KEY`
 - `KAMAL_REGISTRY_PASSWORD` (only if the registry requires auth)
-
-> **Note:** `config/deploy.yml` ships with a private target (`192.168.0.1`) and a
-> local registry (`localhost:5555`). Update `servers.web` and `registry.server` to
-> your real host/registry before deploying.
 
 Run a deploy locally at any time with:
 
@@ -219,12 +195,4 @@ Start the tunnel (if not already running):
 ngrok http 3000
 ```
 
-The tunnel forwards to `http://localhost:3000`. `config/application.rb` allowlists
-`*.ngrok-free.dev` (and other ngrok domains) so Rails' host authorization accepts
-the tunnel. The ngrok free tier shows a one-time browser interstitial; click
-"Visit Site" to continue, or send the `ngrok-skip-browser-warning: 1` header for
-programmatic access.
-
-## License
-
-MIT
+The tunnel forwards to `http://localhost:3000`. `config/application.rb` allowlists `*.ngrok-free.dev` (and other ngrok domains) so Rails' host authorization accepts the tunnel. The ngrok free tier shows a one-time browser interstitial; click "Visit Site" to continue, or send the `ngrok-skip-browser-warning: 1` header for programmatic access.
