@@ -1,5 +1,8 @@
 <article id="<%= dom_id post %>" class="group flex h-full flex-col overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-stone-900/10">
-  <%= link_to post, class: "cover-texture relative flex h-44 items-center justify-center bg-gradient-to-br #{cover_gradient(post)}" do %>
+  <%= link_to post, class: "cover-texture relative flex h-44 items-center justify-center bg-gradient-to-br #{cover_gradient(post)} overflow-hidden" do %>
+    <% if post.cover_image.attached? %>
+      <%= image_tag post.cover_image, class: "absolute inset-0 h-full w-full object-cover", alt: post.title %>
+    <% end %>
     <span class="relative z-10 font-display text-6xl font-bold text-white/90 drop-shadow-md transition-transform duration-500 group-hover:scale-110"><%= post.title.to_s.first&.upcase || "O" %></span>
     <span class="absolute left-4 top-4 z-10 rounded-full bg-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-md"><%= post.created_at.strftime("%b %d") %></span>
     <span class="absolute bottom-4 right-4 z-10 rounded-full bg-black/25 px-3 py-1 text-[11px] font-medium text-white backdrop-blur-md"><%= reading_time(post) %></span>

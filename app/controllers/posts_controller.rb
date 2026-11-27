@@ -2,29 +2,33 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, only: %i[ new create edit update destroy ]
   before_action :set_post, only: %i[ show edit update destroy ]
 
-  # GET /posts or /posts.json
   def index
-    @posts = Post.order(created_at: :desc)
+    per_page = 9
+    page = [ params[:page].to_i, 1 ].max
+    scope = Post.published.recent.includes(:category, :tags, :user)
+    @total = scope.count
+    @posts = scope.offset((page - 1) * per_page).limit(per_page)
+    @page = page
+    @per_page = per_page
+    @total_pages = (@total.to_f / per_page).ceil
   end
 
-  # GET /posts/1 or /posts/1.json
   def show
     @comments = @post.comments.includes(:user).order(created_at: :asc)
     @comment = Comment.new(post: @post)
+    @related = Post.published.where.not(id: @post.id).order(created_at: :desc).limit(3)
   end
 
-  # GET /posts/new
   def new
     @post = Post.new
   end
 
-  # GET /posts/1/edit
   def edit
   end
 
-  # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
+    @post.user = current_user if user_signed_in?
 
     respond_to do |format|
       if @post.save
@@ -37,7 +41,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /posts/1 or /posts/1.json
   def update
     respond_to do |format|
       if @post.update(post_params)
@@ -50,7 +53,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy!
 
@@ -61,13 +63,14 @@ class PostsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.expect(post: [ :title, :content, attachments: [] ])
-    end
+  def set_post
+    @post = Post.find_by(slug: params[:slug]) || Post.find(params[:slug])
+  rescue ActiveRecord::RecordNotFound
+    @post = Post.find(params[:slug])
+  end
+
+  def post_params
+    params.expect(post: [ :title, :content, :subtitle, :excerpt, :status, :category_id, :seo_title, :seo_description, tag_ids: [], attachments: [], cover_image: nil ])
+  end
 end

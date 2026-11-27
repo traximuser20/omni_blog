@@ -86,6 +86,14 @@
       </div>
     <% end %>
   </section>
+
+  <% if @total_pages && @total_pages > 1 %>
+    <nav class="mt-10 flex items-center justify-center gap-2">
+      <% (1..@total_pages).each do |p| %>
+        <%= link_to p, posts_path(page: p), class: "rounded-full px-4 py-2 text-sm font-semibold #{p == @page ? 'bg-stone-900 text-white' : 'border border-stone-200 bg-white text-stone-700 hover:border-stone-900'}" %>
+      <% end %>
+    </nav>
+  <% end %>
 <% else %>
   <!-- Empty state -->
   <section class="mx-auto mt-6 max-w-2xl overflow-hidden rounded-3xl border border-stone-200 bg-white text-center shadow-xl shadow-stone-900/[0.05] animate-rise-1">

@@ -1,6 +1,6 @@
 ---
 name: omni_blog_skills
-description: Skills for the omni_blog project — a Rails 8 editorial blog with Devise auth, ActiveAdmin, comments and Active Storage attachments
+description: Skills for the omni_blog project — a Rails 8 editorial blog MVP with Devise auth, ActiveAdmin, categories, tags, search, likes, bookmarks, SEO and dark mode
 metadata:
   type: skills
 ---
@@ -37,11 +37,13 @@ actually apply to this codebase.
 - erb-templating
 - accessibility
 - seo
+- dark-mode
 
 ## Storage & Media
 - active-storage
 - file-upload-validation
 - image-handling
+- cover-image-handling
 
 ## Database
 - postgresql
@@ -49,6 +51,7 @@ actually apply to this codebase.
 - database-indexing
 - database-migrations
 - error-handling
+- full-text-search
 
 ## Testing
 - minitest
@@ -75,6 +78,7 @@ actually apply to this codebase.
 - query-optimization
 - asset-pipeline
 - caching
+- pagination
 
 ## DevOps
 - kamal-deployment
@@ -91,9 +95,15 @@ actually apply to this codebase.
 - omni-blog-comment-system
 - omni-blog-attachment-system
 - omni-blog-admin-notes
+- omni-blog-category-system
+- omni-blog-tag-system
+- omni-blog-search
+- omni-blog-engagement (likes/bookmarks)
+- omni-blog-seo
 
 ## Recent Professionalization
 - database-migrations
 - database-indexing
 - rails-tdd
 - code-reviewer
+- mvp-completion

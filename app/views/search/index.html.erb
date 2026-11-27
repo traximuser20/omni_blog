@@ -1,0 +1,18 @@
+<% content_for :title, "Search" %>
+<section class="pt-10">
+  <h1 class="font-display text-4xl font-semibold tracking-tight">Search</h1>
+  <%= form_with url: search_path, method: :get, class: "mt-6 flex gap-3" do |f| %>
+    <%= f.search_field :q, value: @query, placeholder: "Search stories…", class: "flex-1 rounded-2xl border border-stone-200 bg-white px-5 py-3 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/15" %>
+    <%= f.submit "Search", class: "rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold text-white hover:bg-orange-600" %>
+  <% end %>
+
+  <% if @query.present? %>
+    <p class="mt-6 text-sm text-stone-500"><%= pluralize(@posts.size, "result") %> for “<%= @query %>”</p>
+    <div class="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <%= render @posts %>
+    </div>
+    <% if @posts.empty? %>
+      <p class="mt-8 text-stone-500">No stories found.</p>
+    <% end %>
+  <% end %>
+</section>

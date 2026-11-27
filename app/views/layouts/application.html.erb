@@ -3,7 +3,12 @@
   <head>
     <title><%= content_for(:title) || "OmniBlog — Stories worth reading" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="OmniBlog — essays, tutorials and notes on building with Rails.">
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "OmniBlog — essays, tutorials and notes on building with Rails." %>">
+    <link rel="canonical" href="<%= request.original_url %>">
+    <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "OmniBlog" %>">
+    <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "OmniBlog — essays, tutorials and notes on building with Rails." %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
@@ -15,6 +20,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+        <script>
+      (function() {
+        try {
+          var pref = localStorage.getItem("theme") || "system";
+          var dark = pref === "dark" || (pref === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+        } catch(e) {}
+      })();
+    </script>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -35,13 +49,20 @@
 
         <nav class="hidden items-center gap-1 text-sm font-medium text-stone-600 md:flex">
           <%= link_to "Stories", root_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
+          <%= link_to "Categories", categories_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
+          <%= link_to "Tags", tags_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
+          <%= link_to "Search", search_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
+          <%= link_to "About", about_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
           <%= link_to "Admin", admin_root_path, class: "rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white" %>
-          <a href="#latest" class="rounded-full px-4 py-2 transition-colors hover:bg-stone-900 hover:text-white">Latest</a>
         </nav>
 
         <div class="flex items-center gap-3">
+          <button type="button" onclick="(function(){var d=document.documentElement.classList; if(d.contains('dark')){d.remove('dark');localStorage.setItem('theme','light');}else{d.add('dark');localStorage.setItem('theme','dark');}})()" class="grid h-9 w-9 place-items-center rounded-full border border-stone-200 bg-white/80 text-stone-500 shadow-sm transition hover:border-stone-900 hover:text-stone-900" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+          </button>
           <span class="hidden font-mono text-xs text-stone-400 sm:block"><%= @posts&.size || Post.count %> stories</span>
           <% if user_signed_in? %>
+            <%= link_to "Bookmarks", bookmarks_path, class: "text-sm font-semibold text-stone-600 hover:text-stone-900" %>
             <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "group inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-all hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-orange-600/25" %>
           <% else %>
             <%= link_to "Login", new_user_session_path, class: "text-sm font-semibold text-stone-600 hover:text-stone-900" %>

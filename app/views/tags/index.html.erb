@@ -1,0 +1,11 @@
+<% content_for :title, "Tags" %>
+<section class="pt-10">
+  <h1 class="font-display text-4xl font-semibold tracking-tight">Tags</h1>
+  <div class="mt-8 flex flex-wrap gap-3">
+    <% @tags.each do |t| %>
+      <%= link_to tag_path(t), class: "rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-orange-400 hover:text-orange-600" do %>
+        #<%= t.name %> <span class="text-stone-400">(<%= t.posts.published.count %>)</span>
+      <% end %>
+    <% end %>
+  </div>
+</section>

@@ -1,11 +1,11 @@
 class CommentsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: %i[ create destroy ]
   before_action :set_post
 
-  # POST /posts/:post_id/comments
   def create
     @comment = @post.comments.build(comment_params)
     @comment.user = current_user
+    @comment.status = "approved"
 
     if @comment.save
       redirect_to @post, notice: "Comment posted.", status: :see_other
@@ -14,11 +14,10 @@ class CommentsController < ApplicationController
     end
   end
 
-  # DELETE /posts/:post_id/comments/:id
   def destroy
-    @comment = @post.comments.find(params.expect(:id))
+    @comment = @post.comments.find(params[:id])
 
-    if @comment.user == current_user
+    if @comment.user == current_user || (respond_to?(:current_admin_user) && current_admin_user)
       @comment.destroy!
       redirect_to @post, notice: "Comment deleted.", status: :see_other
     else
@@ -28,7 +27,7 @@ class CommentsController < ApplicationController
 
   private
     def set_post
-      @post = Post.find(params.expect(:post_id))
+      @post = Post.find_by(slug: params[:slug]) || Post.find(params[:slug]) rescue Post.find(params[:post_id])
     end
 
     def comment_params

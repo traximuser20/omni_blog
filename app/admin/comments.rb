@@ -1,5 +1,5 @@
 ActiveAdmin.register Comment do
-  permit_params :body, :post_id, :user_id
+  permit_params :body, :post_id, :user_id, :status
 
   menu label: "Comments", priority: 4
 

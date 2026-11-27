@@ -1,16 +1,29 @@
 # OmniBlog
 
-An editorial blog built with Ruby on Rails — "Stories worth reading." OmniBlog publishes long-form essays, tutorials and field notes with a refined, print-inspired UI, a public comment system, file attachments, and a full ActiveAdmin back office.
+An editorial blog built with Ruby on Rails — "Stories worth reading." OmniBlog is a
+production-quality MVP blog platform with a refined, print-inspired public UI, a full
+ActiveAdmin back office, categories, tags, search, comments, likes, bookmarks, SEO,
+dark mode, and PostgreSQL.
 
-## Features
+## Features (MVP)
 
-- **Editorial public site** — featured story, latest grid, reading-time estimates, progress bar, responsive Tailwind v4 theme (stone/orange, Fraunces display type).
-- **Stories (Posts)** — create, edit, delete posts with title + content; JSON endpoints for the feed.
-- **Comments** — signed-in users can comment on any post; authors can delete their own comments; avatars derived from account initials.
-- **Attachments** — drag-and-drop multi-file upload on new/edit forms (images, PDFs, documents); gallery on the post page with image thumbnails and download links; per-file removal. Stored via Active Storage (local disk in dev/prod).
-- **Authentication** — Devise for readers (`User`) and administrators (`AdminUser`).
-- **Admin back office** — ActiveAdmin with dashboard (recent posts + stats), post management with a public-comments panel and internal "Admin notes", public comment moderation, admin user management, and styled theme.
-- **Accessibility & UX** — semantic markup, keyboard-friendly forms, empty states, Turbo-driven interactions.
+- **Public website** — `/`, `/blog`, `/blog/:slug`, `/categories`, `/category/:slug`, `/tags`, `/tag/:slug`, `/search`, `/about`, `/contact`, `/bookmarks`.
+- **Homepage** — featured post, latest grid, reading-time estimates, responsive Tailwind v4 theme (stone/orange, Fraunces display type).
+- **Article page** — title, subtitle, cover image, author, published/updated dates, reading time, category, tags, content, table of contents, reading progress, social sharing, like, bookmark, comments, related posts.
+- **Blog listing** — post cards, cover image, title, excerpt, author, category, tags, published date, reading time, pagination, category/tag filtering, sorting by latest.
+- **Search** — PostgreSQL ILIKE search across title, excerpt, content, tags, categories with pagination and empty state.
+- **Admin authentication** — Devise for readers (`User`) and administrators (`AdminUser`); secure sessions, password hashing.
+- **Admin back office** (`/admin`) — Dashboard, Posts, Categories, Tags, Media, Comments, Settings. Draft/publish/unpublish, preview, slug auto-generation, reading time.
+- **Post management** — create, edit, delete, save draft, publish, unpublish, preview. Statuses: `DRAFT`, `PUBLISHED`.
+- **Categories & Tags** — full CRUD, public pages, assignment/removal.
+- **Media** — Active Storage cover images and inline attachments, file type/size validation, preview, deletion.
+- **Comments** — add, delete own, admin delete, `APPROVED`/`PENDING` moderation.
+- **Likes** — like/unlike, count, duplicate prevention.
+- **Bookmarks** — bookmark/remove, "My bookmarks" page.
+- **SEO** — title, meta description, canonical URL, Open Graph tags, robots.txt, XML sitemap, RSS feed, `BlogPosting` JSON-LD.
+- **Dark mode** — Light/Dark/System, persisted preference.
+- **Accessibility** — semantic HTML, keyboard navigation, form labels, focus states, contrast.
+- **Performance** — pagination, database indexes, eager loading, lazy-loaded images.
 
 ## Tech Stack
 
@@ -65,7 +78,7 @@ Visit http://localhost:3000
 
 - URL: http://localhost:3000/admin
 - Default seeded admin: `admin@example.com` / `password` (change in production)
-- Admin navigation: Dashboard · Comments (public comments) · Admin Users · Posts · Admin Notes (internal notes)
+- Admin navigation: Dashboard · Posts · Categories · Tags · Media · Comments · Settings
 
 ## Development
 
@@ -88,45 +101,51 @@ bin/rails dartsass:build
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/` | Post index (featured + grid) |
-| GET | `/posts/:id` | Post show (body, attachments, comments) |
-| GET | `/posts/new`, `/posts/:id/edit` | Post form (title, content, attachments) |
-| POST/PATCH/DELETE | `/posts`, `/posts/:id` | Post CRUD |
-| POST | `/posts/:post_id/comments` | Create comment (auth required) |
-| DELETE | `/posts/:post_id/comments/:id` | Delete own comment |
-| DELETE | `/posts/:post_id/attachments/:id` | Remove an attachment |
+| GET | `/` | Homepage (featured + latest) |
+| GET | `/blog` | Blog listing |
+| GET | `/blog/:slug` | Article page |
+| GET | `/categories` | Categories index |
+| GET | `/category/:slug` | Category page |
+| GET | `/tags` | Tags index |
+| GET | `/tag/:slug` | Tag page |
+| GET | `/search` | Search |
+| GET | `/about` | About page |
+| GET | `/contact` | Contact page |
+| GET | `/bookmarks` | My bookmarks (auth required) |
+| POST/DELETE | `/posts/:slug/like` | Like/unlike |
+| POST/DELETE | `/posts/:slug/bookmark` | Bookmark/remove |
+| POST/DELETE | `/posts/:post_slug/comments` | Comments |
+| GET | `/sitemap.xml` | XML sitemap |
+| GET | `/feed.xml` / `/rss.xml` | RSS feed |
 | GET | `/admin` | ActiveAdmin dashboard |
-| GET | `/admin/posts`, `/admin/comments`, `/admin/admin_users`, `/admin/admin_comments` | Admin resources |
 
 ## Data Model
 
-- **Post** — `title`, `content`; `has_many :comments`, `has_many_attached :attachments`.
-- **Comment** — `body` (≤ 2000 chars); `belongs_to :post`, `belongs_to :user`.
-- **User** — Devise (`database_authenticatable`, `registerable`, `recoverable`, `rememberable`, `validatable`); `has_many :comments`.
-- **AdminUser** — Devise admin; `serialize_from_session` hardened for Devise 5.0.
+- **Post** — `title`, `slug`, `subtitle`, `excerpt`, `content`, `cover_image`, `status`, `published_at`, `seo_title`, `seo_description`; belongs to `user`/`category`; has many `comments`, `tags` (via `post_tags`), `post_likes`, `bookmarks`, `attachments`.
+- **Category** — `name`, `slug`, `description`; has many `posts`.
+- **Tag** — `name`, `slug`; has many `posts` (via `post_tags`).
+- **Comment** — `body`, `status` (`approved`/`pending`); belongs to `post`, `user`.
+- **PostLike** — unique `(user_id, post_id)`.
+- **Bookmark** — unique `(user_id, post_id)`.
+- **User** — Devise reader; has many comments, posts, likes, bookmarks.
+- **AdminUser** — Devise admin.
 - **ActiveStorage::Blob/Attachment/VariantRecord** — file storage.
 
 ## Project Structure
 
 ```
 app/
-  admin/              # ActiveAdmin resources (dashboard, posts, comments, admin_users)
-  controllers/        # ApplicationController, PostsController, CommentsController, AttachmentsController
+  admin/              # ActiveAdmin resources (dashboard, posts, categories, tags, comments)
+  controllers/        # Posts, Comments, Attachments, Categories, Tags, Search, Pages, Feeds, PostLikes, Bookmarks
   helpers/            # ApplicationHelper, PostsHelper, CommentsHelper
   javascript/controllers/  # Stimulus: post-form, reading-progress, password-visibility, attachment-upload
-  models/             # ApplicationRecord, Post, Comment, User, AdminUser
-  views/
-    layouts/          # application.html.erb
-    posts/            # index, show, new, edit, _form, _post
-    comments/         # _comment, _form
-    devise/           # auth views
-admin/                # (see app/admin)
+  models/             # Post, Category, Tag, PostTag, PostLike, Bookmark, Comment, User, AdminUser
+  views/              # layouts, posts, comments, categories, tags, search, pages, bookmarks, feeds
 config/
   routes.rb
-  storage.yml         # Active Storage services
-  initializers/       # active_admin, devise, assets, dartsass
+  storage.yml
 db/
-  migrate/            # schema migrations (incl. Active Storage)
+  migrate/
   schema.rb
 test/                 # Minitest suites + fixtures
 ```
@@ -138,7 +157,7 @@ Files are stored on the local filesystem:
 - Development/Production: `storage/` (see `config/storage.yml` `:local`)
 - Test: `tmp/storage/` (`:test`)
 
-`/storage/*` is gitignored. For production, configure S3/GCS in `config/storage.yml` and set `config.active_storage.service` accordingly.
+`/storage/*` is gitignored. For production, configure S3/GCS in `config/storage.yml`.
 
 ## Deployment
 
@@ -157,25 +176,13 @@ The app ships with a `Dockerfile` and Kamal configuration (`.kamal/`). Thruster 
 
 `.github/workflows/ci.yml` runs on every pull request and push to `main`:
 
-- **Security scans** — Brakeman (static analysis), bundler-audit (gem CVEs), importmap audit (JS deps).
+- **Security scans** — Brakeman, bundler-audit, importmap audit.
 - **Lint** — RuboCop (rails-omakase).
 - **Tests** — Minitest suite against PostgreSQL, with asset precompilation.
 
-Concurrency cancellation is enabled to save CI minutes.
-
 ### Continuous Deployment
 
-`.github/workflows/cd.yml` builds and pushes the Docker image to GitHub Container Registry (`ghcr.io`) on every push to `main`, then deploys with Kamal.
-
-- **Build** runs on GitHub-hosted runners and pushes to GHCR.
-- **Deploy** runs on a **self-hosted runner** (your own machine) so it can reach the private deploy target (`config/deploy.yml`) and the local registry. Set up a self-hosted runner on the machine that has SSH access to the server:
-  <https://docs.github.com/en/actions/hosting-your-own-runners>
-
-The deploy job uses the `production` environment (supports required reviewers) and needs these repository secrets:
-
-- `RAILS_MASTER_KEY`
-- `SSH_PRIVATE_KEY`
-- `KAMAL_REGISTRY_PASSWORD` (only if the registry requires auth)
+`.github/workflows/cd.yml` builds and pushes the Docker image to GHCR on every push to `main`, then deploys with Kamal (self-hosted runner).
 
 Run a deploy locally at any time with:
 
@@ -183,16 +190,8 @@ Run a deploy locally at any time with:
 bin/kamal deploy
 ```
 
-## Sharing via ngrok
+## Phase 2 (not in MVP)
 
-The app is exposed publicly at:
-
-> **https://driftless-hiroko-floristically.ngrok-free.dev**
-
-Start the tunnel (if not already running):
-
-```bash
-ngrok http 3000
-```
-
-The tunnel forwards to `http://localhost:3000`. `config/application.rb` allowlists `*.ngrok-free.dev` (and other ngrok domains) so Rails' host authorization accepts the tunnel. The ngrok free tier shows a one-time browser interstitial; click "Visit Site" to continue, or send the `ngrok-skip-browser-warning: 1` header for programmatic access.
+Advanced roles/RBAC, review workflow, scheduled publishing, revision history,
+audit logs, advanced media library, notifications, newsletter, analytics,
+recommendations, AI. Not implemented; code is structured to allow them later.

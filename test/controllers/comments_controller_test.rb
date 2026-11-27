@@ -6,6 +6,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @post = posts(:one)
     @user = users(:one)
+    @comment = comments(:one)
   end
 
   test "should require authentication to create comment" do
@@ -55,3 +56,4 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to post_url(@post)
   end
+end
